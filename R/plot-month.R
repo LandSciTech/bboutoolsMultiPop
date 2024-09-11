@@ -44,6 +44,10 @@ bb_plot_month.data.frame <- function(x, ...) {
   gp <- ggplot(data = x) +
     aes(x = .data$Month, y = .data$estimate, ymin = .data$lower, ymax = .data$upper) +
     xlab("Month")
+  
+  if(is.element("PopulationName",names(x))&&(length(unique(x$PopulationName))>1)){
+    gp <- gp + facet_wrap(~PopulationName)
+  }
 
   if (any(is.na(x$lower))) {
     gp <- gp + ggplot2::geom_point()

@@ -30,6 +30,10 @@ plot_year_trend <- function(x, ...) {
     ) +
     geom_line() +
     xlab(" Caribou Year")
+  
+  if(is.element("PopulationName",names(x))&&(length(unique(x$PopulationName))>1)){
+    gp <- gp + facet_wrap(~PopulationName)
+  }
 
   if (any(is.na(x$lower))) {
     return(gp)

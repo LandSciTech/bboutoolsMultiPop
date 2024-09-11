@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-model_data_recruitment <- function(data, year_start = year_start, quiet) {
+model_data_recruitment <- function(data, year_start = year_start, multi_pops=F,quiet) {
   data <- data_clean_recruitment(data, quiet = quiet)
   data <- data_prep_recruitment(data, year_start = year_start)
   datal <- data_list_recruitment(data)
@@ -57,7 +57,9 @@ model_recruitment <-
     constants <- c(constants, data)
 
     code <- nimbleCode({
-      b0 ~ dnorm(b0_mu, sd = b0_sd)
+      for (k in 1:nPops) {
+        b0[k] ~ dnorm(b0_mu, sd = b0_sd)
+      }
       if (fixed_proportion) {
         adult_female_proportion <- adult_female_prop
       } else {
@@ -70,31 +72,37 @@ model_recruitment <-
       if (year_random) {
         sAnnual ~ dexp(sAnnual_rate)
         for (i in 1:nAnnual) {
-          bAnnual[i] ~ dnorm(0, sd = sAnnual)
+          for (k in 1:nPops) {
+            bAnnual[i,k] ~ dnorm(0, sd = sAnnual)
+          }
         }
       } else if (!year_random & !year_trend) {
-        bAnnual[1] <- 0
-        for (i in 2:nAnnual) {
-          bAnnual[i] ~ dnorm(0, sd = bAnnual_sd)
+        for (k in 1:nPops) {
+          bAnnual[1,k] <- 0
+          for (i in 2:nAnnual) {
+            bAnnual[i,k] ~ dnorm(0, sd = bAnnual_sd)
+          }
         }
       }
       if (year_trend) {
-        bYear ~ dnorm(bYear_mu, sd = bYear_sd)
+        for (k in 1:nPops) {
+          bYear[k] ~ dnorm(bYear_mu, sd = bYear_sd)
+        }
       }
 
       if (year_trend) {
         if (year_random) {
           for (i in 1:nObs) {
-            logit(eRecruitment[i]) <- b0 + bAnnual[Annual[i]] + bYear * Year[i]
+            logit(eRecruitment[i]) <- b0[PopulationID[i]] + bAnnual[Annual[i],PopulationID[i]] + bYear[PopulationID[i]] * Year[i]
           }
         } else {
           for (i in 1:nObs) {
-            logit(eRecruitment[i]) <- b0 + bYear * Year[i]
+            logit(eRecruitment[i]) <- b0[PopulationID[i]] + bYear[PopulationID[i]] * Year[i]
           }
         }
       } else {
         for (i in 1:nObs) {
-          logit(eRecruitment[i]) <- b0 + bAnnual[Annual[i]]
+          logit(eRecruitment[i]) <- b0[PopulationID[i]] + bAnnual[Annual[i],PopulationID[i]]
         }
       }
 
@@ -136,7 +144,7 @@ model_recruitment <-
     model <- nimbleModel(code,
       constants = constants,
       # priors too vague - causes warning of logprob = -Inf unless inits constrained
-      inits = list(b0 = rnorm(1, -1, 2)),
+      inits = list(b0 = rnorm(data$nPops, -1, 2)),
       buildDerivs = TRUE,
       name = "bboumodel_recruitment"
     )

@@ -30,6 +30,7 @@
 #' @inheritParams params
 #' @param sex_ratio A number between 0 and 1 of the proportion of females at birth.
 #' This proportion is applied to yearlings.
+#' @param multi_pops Default FALSE. If TRUE, multiple populations can be analyzed together. It is assumed that the distribution of interannual variability does not differ among populations. 
 #' @return A list of the Nimble model object, data and mcmcr samples.
 #' @export
 #' @family model
@@ -47,9 +48,10 @@ bb_fit_recruitment <- function(
     nthin = 10,
     niters = 1000,
     priors = NULL,
-    quiet = FALSE) {
+    quiet = FALSE,
+    multi_pops=FALSE) {
   chk_data(data)
-  bbd_chk_data_recruitment(data)
+  bbd_chk_data_recruitment(data,multi_pops=multi_pops)
   chk_null_or(adult_female_proportion, vld = vld_range)
   chk_range(sex_ratio)
   chk_whole_number(min_random_year)

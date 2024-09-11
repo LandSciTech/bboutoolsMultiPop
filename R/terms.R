@@ -45,8 +45,9 @@ params_recruitment <- function() {
 }
 
 inits_recruitment <- function() {
+  #Note: this fix assumes only one population. ML methods not enabled for multiple populations.
   c(
-    b0 = -1.4,
+    "b0[1]" = -1.4,
     sAnnual = 1,
     adult_female_proportion = 0.65,
     bYear = 0

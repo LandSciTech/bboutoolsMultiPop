@@ -14,7 +14,8 @@ bb_fit_recruitment(
   nthin = 10,
   niters = 1000,
   priors = NULL,
-  quiet = FALSE
+  quiet = FALSE,
+  multi_pops = FALSE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ Any missing values are assigned their default values in \code{priors_survival()}
 If NULL, all parameters are assigned their default priors.}
 
 \item{quiet}{A flag indicating whether to suppress messages and progress bars.}
+
+\item{multi_pops}{Default FALSE. If TRUE, multiple populations can be analyzed together. It is assumed that the distribution of interannual variability does not differ among populations.}
 }
 \value{
 A list of the Nimble model object, data and mcmcr samples.

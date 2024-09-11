@@ -43,7 +43,11 @@ bb_plot_year.data.frame <- function(x, ...) {
       ymax = .data$upper
     ) +
     xlab("Caribou Year")
-
+  
+  if(is.element("PopulationName",names(x))&&(length(unique(x$PopulationName))>1)){
+    gp <- gp + facet_wrap(~PopulationName)
+  }
+  
   if (any(is.na(x$lower))) {
     return(gp + ggplot2::geom_point())
   }

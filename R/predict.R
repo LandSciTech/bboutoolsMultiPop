@@ -42,6 +42,8 @@ predict_calf_cow <- function(fit, year) {
   data <- augment(fit)
   new <- new_data_ym(data, year = year, month = FALSE)
   derived <- derived_expr_recruitment(fit, year)
+  #Note: this works, but there is probably a better solution.
+  if(length(dim(samples$bAnnual))==3){dim(samples$bAnnual)=c(dim(samples$bAnnual),1)}
   x <- .predict(new_data = new, samples = samples, derived_expr = derived)
   x$data$Month <- NA
   if (!year) x$data$Annual <- NA
@@ -50,12 +52,19 @@ predict_calf_cow <- function(fit, year) {
 
 new_data_ym <- function(x, year, month) {
   seq <- c("Annual", "Month")[c(year, month)]
+  if(length(unique(x$PopulationID))>1){
+    seq=c(seq,"PopulationID")
+  }
   df <- newdata::new_data(
     data = x,
     seq = seq
   )
   df$Year <- factor_to_integer(df$Annual)
   df <- rescale(df, data2 = x, scale = "Year")
+  if(length(unique(x$PopulationID))>1){
+    df$PopulationName=as.character(df$PopulationID)
+  }
+  
   df
 }
 

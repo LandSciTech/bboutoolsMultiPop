@@ -30,17 +30,17 @@ data_prep_recruitment <- function(data, year_start = 4L) {
   data$Year <- caribou_year(data$Year, data$Month, year_start = year_start)
   data <-
     data %>%
-    dplyr::group_by(Year) %>%
+    dplyr::group_by(Year,PopulationName) %>%
     dplyr::summarize(
       Cows = sum(.data$Cows),
       CowsBulls = sum(.data$CowsBulls),
       UnknownAdults = sum(.data$UnknownAdults),
       Yearlings = sum(.data$Yearlings),
-      Calves = sum(.data$Calves),
-      PopulationName = dplyr::first(.data$PopulationName)
+      Calves = sum(.data$Calves)
     ) %>%
     dplyr::ungroup()
   data$Annual <- factor(data$Year)
+  data$PopulationID = factor(data$PopulationName)
 
   data
 }
@@ -48,15 +48,23 @@ data_prep_recruitment <- function(data, year_start = 4L) {
 data_list_recruitment <- function(data, model) {
   data <- rescale(data, scale = "Year")
   x <- list(
+    nAnnual = length(unique(data$Annual)),
+    nPops = length(unique(data$PopulationName)),
     nObs = nrow(data),
     Cows = data$Cows,
     CowsBulls = data$CowsBulls,
     UnknownAdults = data$UnknownAdults,
     Yearlings = data$Yearlings,
     Calves = data$Calves,
-    nAnnual = length(unique(data$Annual)),
+    #Cows = pivot_wider(subset(data,select=c(PopulationID,Year,Cows)),names_from=PopulationID,values_from=Cows)[,-1],
+    #CowsBulls = pivot_wider(subset(data,select=c(PopulationID,Year,CowsBulls)),names_from=PopulationID,values_from=CowsBulls)[,-1],
+    #UnknownAdults = pivot_wider(subset(data,select=c(PopulationID,Year,UnknownAdults)),names_from=PopulationID,values_from=UnknownAdults)[,-1],
+    #Yearlings = pivot_wider(subset(data,select=c(PopulationID,Year,Yearlings)),names_from=PopulationID,values_from=Yearlings)[,-1],
+    #Calves = pivot_wider(subset(data,select=c(PopulationID,Year,Calves)),names_from=PopulationID,values_from=Calves)[,-1],
     Year = data$Year,
-    Annual = as.integer(data$Annual)
+    Annual = as.integer(data$Annual),
+    PopulationID = as.integer(data$PopulationID),
+    PopulationNames = levels(data$PopulationName)
   )
   x
 }
