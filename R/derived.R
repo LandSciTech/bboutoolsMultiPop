@@ -22,22 +22,23 @@ extract_lik <- function(x) {
 
 extract_lik_year <- function(x) {
   x <- extract_lik(x)
-  gsub(" + bMonth[Month[i]]", "", x, fixed = TRUE)
+  gsub(" + bMonth[Month[i], PopulationID[i]]", "", x, fixed = TRUE)
 }
 
 derived_expr_survival <- function(fit, year, month) {
   lik_year <- extract_lik_year(fit)
   if (year) {
+    
     if (month) {
-      pred <- paste0("logit(ilogit(", lik_year, " + bMonth[Month[i]])^12)")
+      pred <- paste0("logit(ilogit(", lik_year, " + bMonth[Month[i], PopulationID[i]])^12)")
     } else {
       pred <- paste0("logit(ilogit(", lik_year, ")^12)")
     }
   } else {
     if (month) {
-      pred <- "logit(ilogit(b0 + bMonth[Month[i]])^12)"
+      pred <- "logit(ilogit(b0[PopulationID[i]] + bMonth[Month[i], PopulationID[i]])^12)"
     } else {
-      pred <- "logit(ilogit(b0)^12)"
+      pred <- "logit(ilogit(b0[PopulationID[i]])^12)"
     }
   }
   paste0("for(i in 1:length(Annual)) {
@@ -60,5 +61,5 @@ derived_expr_recruitment_trend <- function() {
 
 derived_expr_survival_trend <- function() {
   "for(i in 1:length(Annual)) {
-  logit(prediction[i]) <- logit(ilogit(b0 + bYear * Year[i])^12)\n}"
+  logit(prediction[i]) <- logit(ilogit(b0[PopulationID[i]] + bYear[PopulationID[i]] * Year[i])^12)\n}"
 }

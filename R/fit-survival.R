@@ -40,6 +40,7 @@ ml_se_fail <- function(x) {
 #' The start month of the Caribou year can be adjusted with `year_start`.
 #'
 #' @inheritParams params
+#' @param multi_pops Default FALSE. If TRUE, multiple populations can be analyzed together. It is assumed that the distribution of interannual variability does not differ among populations. 
 #' @return A list of the Nimble model object, data and mcmcr samples.
 #' @export
 #' @family model
@@ -55,9 +56,10 @@ bb_fit_survival <- function(data,
                             nthin = 10,
                             niters = 1000,
                             priors = NULL,
-                            quiet = FALSE) {
+                            quiet = FALSE,
+                            multi_pops=FALSE) {
   chk_data(data)
-  bbd_chk_data_survival(data)
+  bbd_chk_data_survival(data,multi_pops=multi_pops)
   chk_whole_number(min_random_year)
   chk_gte(min_random_year)
   chk_flag(year_trend)

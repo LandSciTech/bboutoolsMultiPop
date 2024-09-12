@@ -29,6 +29,7 @@ data_prep_survival <- function(data, include_uncertain_morts = TRUE,
   }
   data$Year <- caribou_year(data$Year, data$Month, year_start = year_start)
   data$Annual <- factor(data$Year)
+  data$PopulationID = factor(data$PopulationName)
 
   # leaves month but sets factor levels to be caribou month for model
   nmonth <- length(unique(data$Month))
@@ -54,9 +55,12 @@ data_list_survival <- function(data) {
     Mortalities = data$Mortalities,
     nMonth = length(unique(data$Month)),
     Month = as.integer(data$Month),
-    nAnnual = length(unique(data$Annual)),
     Year = data$Year,
-    Annual = as.integer(data$Annual)
+    nAnnual = length(unique(data$Annual)),
+    Annual = as.integer(data$Annual),
+    nPops = length(unique(data$PopulationName)),
+    PopulationID = as.integer(data$PopulationID),
+    PopulationNames = levels(data$PopulationID)
   )
 
   x
