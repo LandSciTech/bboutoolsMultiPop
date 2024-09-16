@@ -16,9 +16,11 @@
 
 model_data_survival <- function(data,
                                 include_uncertain_morts,
-                                year_start,
+                                year_start,allow_missing,
                                 quiet) {
-  data <- data_clean_survival(data, quiet = quiet)
+  if(!allow_missing){
+    data <- data_clean_survival(data, quiet = quiet)
+  }
   data <- data_prep_survival(data,
     include_uncertain_morts = include_uncertain_morts,
     year_start = year_start

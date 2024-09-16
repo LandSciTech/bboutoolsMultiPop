@@ -31,6 +31,7 @@
 #' @param sex_ratio A number between 0 and 1 of the proportion of females at birth.
 #' This proportion is applied to yearlings.
 #' @param multi_pops Default FALSE. If TRUE, multiple populations can be analyzed together. It is assumed that the distribution of interannual variability does not differ among populations. 
+#' @param allow_missing Default FALSE. If TRUE allow missing values in data. Set TRUE to get projections for unobserved years from models with random year effects.
 #' @return A list of the Nimble model object, data and mcmcr samples.
 #' @export
 #' @family model
@@ -49,7 +50,8 @@ bb_fit_recruitment <- function(
     niters = 1000,
     priors = NULL,
     quiet = FALSE,
-    multi_pops=FALSE) {
+    multi_pops=FALSE,
+    allow_missing=FALSE) {
   chk_data(data)
   bbd_chk_data_recruitment(data,multi_pops=multi_pops)
   chk_null_or(adult_female_proportion, vld = vld_range)
@@ -68,7 +70,7 @@ bb_fit_recruitment <- function(
   chk_flag(quiet)
 
   priors <- replace_priors(default_priors, priors)
-  data <- model_data_recruitment(data, year_start = year_start, quiet = quiet)
+  data <- model_data_recruitment(data, year_start = year_start,allow_missing=allow_missing, quiet = quiet)
   year_random <- data$datal$nAnnual >= min_random_year
   if (!year_random && year_trend) {
     message_trend_fixed()

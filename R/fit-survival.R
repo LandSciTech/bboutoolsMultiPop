@@ -41,6 +41,7 @@ ml_se_fail <- function(x) {
 #'
 #' @inheritParams params
 #' @param multi_pops Default FALSE. If TRUE, multiple populations can be analyzed together. It is assumed that the distribution of interannual variability does not differ among populations. 
+#' @param allow_missing Default FALSE. If TRUE allow missing values in data. Set TRUE to get projections for unobserved years from models with random year effects.
 #' @return A list of the Nimble model object, data and mcmcr samples.
 #' @export
 #' @family model
@@ -57,9 +58,10 @@ bb_fit_survival <- function(data,
                             niters = 1000,
                             priors = NULL,
                             quiet = FALSE,
-                            multi_pops=FALSE) {
+                            multi_pops=FALSE,
+                            allow_missing=FALSE) {
   chk_data(data)
-  bbd_chk_data_survival(data,multi_pops=multi_pops)
+  bbd_chk_data_survival(data,multi_pops=multi_pops,allow_missing=allow_missing)
   chk_whole_number(min_random_year)
   chk_gte(min_random_year)
   chk_flag(year_trend)
@@ -78,7 +80,7 @@ bb_fit_survival <- function(data,
   data <-
     model_data_survival(data,
       include_uncertain_morts = include_uncertain_morts,
-      year_start = year_start, quiet = quiet
+      year_start = year_start, allow_missing=allow_missing,quiet = quiet
     )
   year_random <- data$datal$nAnnual >= min_random_year
   if (!year_random && year_trend) {

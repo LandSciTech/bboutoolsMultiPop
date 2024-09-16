@@ -14,8 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-model_data_recruitment <- function(data, year_start = year_start, multi_pops=F,quiet) {
-  data <- data_clean_recruitment(data, quiet = quiet)
+model_data_recruitment <- function(data, year_start = year_start, allow_missing=F,quiet) {
+  if(!allow_missing){
+    data <- data_clean_recruitment(data, quiet = quiet)
+  }
   data <- data_prep_recruitment(data, year_start = year_start)
   datal <- data_list_recruitment(data)
   list(datal = datal, data = data)
