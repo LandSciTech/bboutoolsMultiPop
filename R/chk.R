@@ -85,3 +85,12 @@ xname <- function(x, col) {
   }
   warning("Recruitment and survival models were fit with a different month of caribou year start. This can be adjusted with the `year_start` argument in model fitting functions.")
 }
+
+.chk_population_multi <- function(survival, recruitment) {
+
+  samePops = identical(levels(survival$PopulationID),levels(recruitment$PopulationID))
+  if (samePops) {
+    return(invisible())
+  }
+  abort_chk("Recruitment and survival models include different populations. Please include the same set of populations in each analysis.")
+}

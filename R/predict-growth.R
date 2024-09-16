@@ -20,6 +20,7 @@ predict_lambda <- function(survival, recruitment, sex_ratio) {
   chkor_vld(.vld_fit(recruitment), .vld_fit_ml(recruitment))
   chk_s3_class(recruitment, "bboufit_recruitment")
   .chk_year_start_equal(survival, recruitment)
+  .chk_population_multi(survival,recruitment)
 
   pred_sur <- predict_survival(survival, year = TRUE, month = FALSE)
   pred_rec <- predict_calf_cow(recruitment, year = TRUE)
@@ -49,6 +50,7 @@ predict_lambda <- function(survival, recruitment, sex_ratio) {
   rec <- rec * sex_ratio
   rec <- rec / (1 + rec)
   lambda <- sur / (1 - rec)
+  
   list(lambda = lambda, data = data)
 }
 
@@ -91,12 +93,14 @@ bb_predict_growth <- function(survival,
     return(data)
   }
   lambda <- lambda$lambda
+  includePop = length(levels(data$PopulationID))>1
   coef <- predict_coef(lambda,
-    new_data = data, include_pop = FALSE,
+    new_data = data, include_pop = includePop,
     conf_level = conf_level, estimate = estimate,
     sig_fig = sig_fig
   )
   coef$Month <- NULL
+  
   coef
 }
 
@@ -146,13 +150,16 @@ bb_predict_population_change <- function(survival,
     }
   }
   class(pop_change) <- "mcmcarray"
+  includePop = length(levels(data$PopulationID))>1
+  
   coef <- predict_coef(pop_change,
-    new_data = data, include_pop = FALSE,
+    new_data = data, include_pop = includePop,
     conf_level = conf_level, estimate = estimate,
     sig_fig = sig_fig
   )
   coef$Month <- NULL
-  start <- tibble::tibble(CaribouYear = min(coef$CaribouYear) - 1L, estimate = 1, lower = 1, upper = 1)
+  if(includePop){  start <- tibble::tibble(PopulationName=unique(coef$PopulationName),CaribouYear = min(coef$CaribouYear) - 1L, estimate = 1, lower = 1, upper = 1)
+  }else{start <- tibble::tibble(CaribouYear = min(coef$CaribouYear) - 1L, estimate = 1, lower = 1, upper = 1)}
   coef <- rbind(start, coef)
   coef
 }
