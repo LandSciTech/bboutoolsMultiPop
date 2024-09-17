@@ -151,6 +151,7 @@ bb_predict_calf_cow_ratio <- function(recruitment,
   chk_whole_number(sig_fig)
 
   predicted <- predict_calf_cow(fit = recruitment, year = year)
+  if(!conf_level){return(predicted)}
   coef <- predict_coef(
     samples = predicted$samples,
     new_data = predicted$data,
@@ -231,6 +232,8 @@ bb_predict_survival <- function(survival,
   chk_whole_number(sig_fig)
 
   predicted <- predict_survival(survival, year = year, month = month)
+  
+  if(!conf_level){return(predicted)}
   coef <- predict_coef(
     samples = predicted$samples,
     new_data = predicted$data,
