@@ -46,7 +46,7 @@ derived_expr_survival <- function(fit, year, month) {
 }
 
 derived_expr_recruitment <- function(fit, year) {
-  lik <- "b0"
+  lik <- "b0[PopulationID[i]]"
   if (year) {
     lik <- extract_lik(fit)
   }
