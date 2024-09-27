@@ -33,8 +33,11 @@ data_prep_survival <- function(data, include_uncertain_morts = TRUE,
 
   # leaves month but sets factor levels to be caribou month for model
   nmonth <- length(unique(data$Month))
-  data$Month <- factor(data$Month, levels = month_levels(year_start, n = nmonth))
-
+  if(nmonth>1){
+    data$Month <- factor(data$Month, levels = month_levels(year_start, n = nmonth))
+  }else{
+    data$Month <- factor(year_start)
+  }
   data
 }
 

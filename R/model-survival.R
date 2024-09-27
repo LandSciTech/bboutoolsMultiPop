@@ -84,13 +84,21 @@ model_survival <- function(data,
       }
     }
 
-    sMonth ~ dexp(sMonth_rate)
-    for (i in 1:nMonth) {
-      for (k in 1:nPops) {
-        bMonth[i,k] ~ dnorm(0, sd = sMonth)
+    if(nMonth>1) {
+      sMonth ~ dexp(sMonth_rate)
+      for (i in 1:nMonth) {
+        for (k in 1:nPops) {
+          bMonth[i,k] ~ dnorm(0, sd = sMonth)
+        }
       }
-    }
-
+    }else{
+      for (i in 1:nMonth) {
+        for (k in 1:nPops) {
+          bMonth[i,k] <- 0
+        }
+      }
+    }  
+    
     if (year_trend) {
       if (year_random) {
         for (i in 1:nObs) {
