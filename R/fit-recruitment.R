@@ -94,7 +94,7 @@ bb_fit_recruitment <- function(
     monitor <- monitor[monitor != "adult_female_proportion"]
   }
   if(!do_fit){
-    fit <= list(model=model,samples=NULL)
+    fit <- list(model=model,samples=NULL)
   }else{
     
     fit <- run_nimble(
