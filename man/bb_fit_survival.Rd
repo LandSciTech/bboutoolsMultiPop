@@ -15,7 +15,8 @@ bb_fit_survival(
   priors = NULL,
   quiet = FALSE,
   multi_pops = FALSE,
-  allow_missing = FALSE
+  allow_missing = FALSE,
+  do_fit = TRUE
 )
 }
 \arguments{

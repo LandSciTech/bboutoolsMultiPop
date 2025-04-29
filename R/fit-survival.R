@@ -59,7 +59,8 @@ bb_fit_survival <- function(data,
                             priors = NULL,
                             quiet = FALSE,
                             multi_pops=FALSE,
-                            allow_missing=FALSE) {
+                            allow_missing=FALSE,
+                            do_fit=TRUE) {
   chk_data(data)
   bbd_chk_data_survival(data,multi_pops=multi_pops,allow_missing=allow_missing)
   chk_whole_number(min_random_year)
@@ -99,26 +100,30 @@ bb_fit_survival <- function(data,
   vars <- model$getVarNames()
   monitor <- params[params %in% vars]
 
-  fit <- run_nimble(
-    model = model,
-    monitor = monitor,
-    inits = NULL,
-    niters = niters,
-    nchains = 3L,
-    nthin = nthin,
-    quiet = quiet
-  )
-
-  attrs <- list(
-    nthin = nthin,
-    niters = niters,
-    nobs = nrow(data$data),
-    year_trend = year_trend,
-    year_start = year_start
-  )
-
-  .attrs_bboufit(fit) <- attrs
-  fit$data <- data$data
+  if(!do_fit){
+    fit<-list(list(model=model,samples=NULL))
+  }else{
+    fit <- run_nimble(
+      model = model,
+      monitor = monitor,
+      inits = NULL,
+      niters = niters,
+      nchains = 3L,
+      nthin = nthin,
+      quiet = quiet
+    )
+    
+    attrs <- list(
+      nthin = nthin,
+      niters = niters,
+      nobs = nrow(data$data),
+      year_trend = year_trend,
+      year_start = year_start
+    )
+    
+    .attrs_bboufit(fit) <- attrs
+    fit$data <- data$data
+  }
   x <- model$getCode()
   fit$model_code <- model$getCode()
   class(fit) <- c("bboufit_survival", "bboufit")
