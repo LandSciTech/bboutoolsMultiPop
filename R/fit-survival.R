@@ -122,8 +122,8 @@ bb_fit_survival <- function(data,
     )
     
     .attrs_bboufit(fit) <- attrs
-    fit$data <- data$data
   }
+  fit$data <- data$data
   x <- model$getCode()
   fit$model_code <- model$getCode()
   class(fit) <- c("bboufit_survival", "bboufit")
