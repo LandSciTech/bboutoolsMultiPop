@@ -51,7 +51,8 @@ bb_fit_recruitment <- function(
     priors = NULL,
     quiet = FALSE,
     multi_pops=FALSE,
-    allow_missing=FALSE) {
+    allow_missing=FALSE,
+    do_fit = TRUE) {
   chk_data(data)
   bbd_chk_data_recruitment(data,multi_pops=multi_pops)
   chk_null_or(adult_female_proportion, vld = vld_range)
@@ -92,22 +93,26 @@ bb_fit_recruitment <- function(
   if (!is.null(adult_female_proportion)) {
     monitor <- monitor[monitor != "adult_female_proportion"]
   }
-
-  fit <- run_nimble(
-    model = model, monitor = monitor,
-    inits = NULL, niters = niters, nchains = 3L,
-    nthin = nthin, quiet = quiet
-  )
-
-  attrs <- list(
-    nthin = nthin,
-    niters = niters,
-    nobs = nrow(data$data),
-    year_trend = year_trend,
-    year_start = year_start
-  )
-
-  .attrs_bboufit(fit) <- attrs
+  if(!do_fit){
+    fit <= list(model=model,samples=NULL)
+  }else{
+    
+    fit <- run_nimble(
+      model = model, monitor = monitor,
+      inits = NULL, niters = niters, nchains = 3L,
+      nthin = nthin, quiet = quiet
+    )
+    
+    attrs <- list(
+      nthin = nthin,
+      niters = niters,
+      nobs = nrow(data$data),
+      year_trend = year_trend,
+      year_start = year_start
+    )
+    
+    .attrs_bboufit(fit) <- attrs
+  }
   fit$data <- data$data
   fit$model_code <- model$getCode()
   class(fit) <- c("bboufit_recruitment", "bboufit")
