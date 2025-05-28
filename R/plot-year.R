@@ -45,7 +45,7 @@ bb_plot_year.data.frame <- function(x, ...) {
     xlab("Caribou Year")
   
   if(is.element("PopulationName",names(x))&&(length(unique(x$PopulationName))>1)){
-    gp <- gp + facet_wrap(~PopulationName)
+    gp <- gp + ggplot2::facet_wrap(~PopulationName)
   }
   
   if (any(is.na(x$lower))) {
