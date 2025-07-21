@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/poissonconsulting/bboutools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/poissonconsulting/bboutools/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/poissonconsulting/bboutools/graph/badge.svg)](https://app.codecov.io/gh/poissonconsulting/bboutools)
@@ -39,6 +39,11 @@ library(tibble) # for printing data frames
 library(ggplot2) # for plotting
 
 library(bboudata) # for boreal caribou datasets
+#> 
+#> Attaching package: 'bboudata'
+#> The following object is masked from 'package:bboutools':
+#> 
+#>     licensing_md
 library(bboutools)
 
 surv_data <- bboudata::bbousurv_a
@@ -198,20 +203,14 @@ Code of
 Conduct](https://poissonconsulting.github.io/bboutools/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
-## License
+## Licensing
 
-The code is released under the Apache License 2.0
+Copyright 2022-2023 Integrated Ecological Research and Poisson
+Consulting Ltd.  
+Copyright 2024 Province of Alberta  
 
-Copyright 2022 Environment and Climate Change Canada
+The documentation is released under the [CC BY 4.0
+License](https://creativecommons.org/licenses/by/4.0/)
 
-Licensed under the Apache License, Version 2.0 (the “License”); you may
-not use this file except in compliance with the License. You may obtain
-a copy of the License at
-
-<https://www.apache.org/licenses/LICENSE-2.0>
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The code is released under the [Apache License
+2.0](https://www.apache.org/licenses/LICENSE-2.0)
